@@ -1,9 +1,15 @@
- [package]
+[package]
 name = "throne_game"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-eframe = "0.27" # Фреймворк для окон и egui
-egui = "0.27"   # Библиотека GUI
-rand = "0.8"    # Для случайных событий
+eframe = "0.27"
+egui_plot = "0.27"  # Отдельный крейт для графиков
+rand = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[profile.release]
+opt-level = 3
+lto = true
