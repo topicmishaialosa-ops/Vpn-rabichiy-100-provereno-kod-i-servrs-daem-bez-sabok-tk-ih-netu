@@ -1,5 +1,5 @@
 use eframe::egui;
-use egui::plot::{Line, Plot, PlotPoints};
+use egui_plot::{Line, Plot, PlotPoints};
 use rand::Rng;
 use serde::{Serialize, Deserialize};
 use std::fs;
@@ -215,7 +215,7 @@ impl ThroneApp {
                     self.event_message = format!("🏴‍☠️ Бандиты грабят окраины! Потеряно {} золота.", stolen);
                     self.event_timer = 3.0;
                     
-                    let lost_guards = (attack_power / 10).max(1);
+                    let lost_guards = (attack_power / 10).max(1) as u32; // Исправлено: преобразование в u32
                     self.guards = self.guards.saturating_sub(lost_guards);
                     self.log_messages.push(format!("💔 Потеряно {} стражников!", lost_guards));
                 }
@@ -368,7 +368,7 @@ impl ThroneApp {
             self.render_income_chart(ui);
             ui.separator();
             
-            // Лог событий
+            // Лог событий (ИСПРАВЛЕНО)
             ui.heading("📜 ЛЕТОПИСЬ");
             let mut text = String::new();
             let start = if self.log_messages.len() > 10 { self.log_messages.len() - 10 } else { 0 };
@@ -377,7 +377,9 @@ impl ThroneApp {
                 text.push('\n');
             }
             
-            let text_edit = egui::TextEdit::multiline(&mut text.as_str())
+            // Исправление: создаем изменяемую строку для TextEdit
+            let mut display_text = text.clone();
+            let text_edit = egui::TextEdit::multiline(&mut display_text)
                 .font(egui::TextStyle::Monospace)
                 .desired_rows(8)
                 .desired_width(f32::INFINITY)
@@ -467,7 +469,6 @@ impl eframe::App for ThroneApp {
     }
 }
 
-// --- Точка входа (ИСПРАВЛЕНО) ---
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
